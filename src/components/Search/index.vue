@@ -48,10 +48,11 @@
     watch : {
       message(newVal) {
         // console.log(newVal);
+        let cityId = this.$store.state.city.id;
         let that = this;
         this.cancelRequest();
         //axios自带终止多次请求
-        this.$axios.get('/api/searchList?cityId=10&kw=' + newVal,{
+        this.$axios.get('/api/searchList?cityId=' + cityId + '&kw=' + newVal,{
            cancelToken: new this.$axios.CancelToken(function(c) {
                     that.source = c;
                 })

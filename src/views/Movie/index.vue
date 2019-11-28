@@ -4,7 +4,7 @@
     <div id="content">
       <div class="movie_menu">
         <router-link tag="div" to="/movie/city" class="city_name">
-          <span>大连</span>
+          <span>{{ $store.state.city.nm }}</span>
           <i class="iconfont icon-lower-triangle"></i>
         </router-link>
         <div class="hot_swtich">
@@ -25,14 +25,42 @@
 <script>
 import Header from "@/components/Header";
 import TabBar from "@/components/TabBar";
+import { messageBox } from "@/components/JS"
 
 export default {
   name: "Movie",
   components: {
     Header,
     TabBar
+  },
+  mounted() {
+    setTimeout(()=>{
+      this.$axios.get('/api/getLocation').then(res =>{
+          let msg = res.data.msg;
+          if( msg === 'ok' ){
+
+            let nm = res.data.data.nm;
+            let id = res.data.data.id;
+            console.log(this.$store.state.city.id , id)
+            if( this.$store.state.city.id == id){
+              return;
+            }
+            messageBox({
+              title : '定位',
+              content : nm,
+              cancel : '取消',
+              ok : '切换定位',
+              handleOk(){
+                window.localStorage.setItem('nowNm',nm);
+                window.localStorage.setItem('nowId',id);
+                window.location.reload();
+              }
+            })
+          }
+      })
+    },3000);   
   }
-};
+}
 </script>
 <style scoped>
 #content .movie_menu {
